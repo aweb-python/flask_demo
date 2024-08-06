@@ -6,6 +6,8 @@ ENV APP_NAME flask_demo
 # 设置工作目录
 WORKDIR /home/admin/$APP_NAME/
 
+COPY pip.conf /root/.pip/pip.conf
+
 COPY . $WORKDIR
 
 RUN pip3 install -r requirements.txt 
