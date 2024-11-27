@@ -12,7 +12,7 @@ RUN mkdir -p ~/.pip/ && \
     > /etc/apk/repositories && \
     echo -e "http://mirrors.cloud.aliyuncs.com/alpine/v3.15/main\nhttp://mirrors.cloud.aliyuncs.com/alpine/v3.15/community" >/etc/apk/repositories 
 RUN    apk update && apk add curl busybox-extras && \
-    pip3 install -r requirements.txt 
+    pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 # 暴露 Flask 默认端口
 EXPOSE 5000
