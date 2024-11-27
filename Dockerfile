@@ -7,8 +7,12 @@ ENV APP_NAME flask_demo
 WORKDIR /home/admin/$APP_NAME/
 
 COPY . $WORKDIR
-
-RUN pip3 install -r requirements.txt 
+RUN mkdir -p ~/.pip/ && \
+    echo -e "[global]\nextra-url=http://mirrors.cloud.aliyuncs.com/pypi/simple/\n[install]\ntrusted-host=mirrors.cloud.aliyuncs.com" > ~/.pip/pip.conf && \ 
+    > /etc/apk/repositories && \
+    echo -e "http://mirrors.cloud.aliyuncs.com/alpine/v3.15/main\nhttp://mirrors.cloud.aliyuncs.com/alpine/v3.15/community" >/etc/apk/repositories 
+RUN    apk update && apk add curl busybox-extras && \
+    pip3 install -r requirements.txt 
 
 # 暴露 Flask 默认端口
 EXPOSE 5000
@@ -18,4 +22,4 @@ ENV FLASK_APP=app:app
 ENV FLASK_ENV=development
 
 # 运行 Flask 开发服务器
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["flask", "run", "--host=0.0.0.0","--port=80"]
