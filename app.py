@@ -1,12 +1,14 @@
 import os
+import logging
+import pymysql
 import datetime
 import hashlib
-from flask import Flask, session, url_for, redirect, render_template, request, abort, flash
+from flask import Flask, session, url_for, redirect, render_template, request, abort, flash,jsonify
 from database import list_users, verify, delete_user_from_db, add_user
 from database import read_note_from_db, write_note_into_db, delete_note_from_db, match_user_id_with_note_id
 from database import image_upload_record, list_images_for_user, match_user_id_with_image_uid, delete_image_from_db
 from werkzeug.utils import secure_filename
-
+import json
 
 
 app = Flask(__name__)
@@ -198,7 +200,36 @@ def FUN_add_user():
 
 
 
+logger = logging.getLogger()
+def getConnection():
+    try:
+        conn = pymysql.connect(
+            host=os.environ['MYSQL_HOST'],       # 替换为您的HOST名称。
+            port=int(os.environ['MYSQL_PORT']),  # 替换为您的端口号。
+            user=os.environ['MYSQL_USER'],       # 替换为您的用户名。
+            passwd=os.environ['MYSQL_PASSWORD'],  # 替换为您的用户名对应的密码。
+            db=os.environ['MYSQL_DBNAME'],       # 替换为您的数据库名称。
+            connect_timeout=5)
+        return conn
+    except Exception as e:
+        logger.error(e)
+        logger.error(
+            "ERROR: Unexpected error: Could not connect to MySql instance.")
+        raise Exception(str(e))
+conn = getConnection()
 
+@app.route("/getrds/", methods = ['GET'])
+def get_rds_data():
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM user_tbl")
+            result = cursor.fetchall()
+            logger.info(result)
+
+            return jsonify(result)
+    finally:
+        conn.close()
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
