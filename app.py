@@ -8,7 +8,7 @@ from database import list_users, verify, delete_user_from_db, add_user
 from database import read_note_from_db, write_note_into_db, delete_note_from_db, match_user_id_with_note_id
 from database import image_upload_record, list_images_for_user, match_user_id_with_image_uid, delete_image_from_db
 from werkzeug.utils import secure_filename
-import json
+import traceback
 
 
 app = Flask(__name__)
@@ -215,6 +215,7 @@ def getConnection():
         logger.error(e)
         logger.error(
             "ERROR: Unexpected error: Could not connect to MySql instance.")
+        traceback.print_exc()
         raise Exception(str(e))
 conn = getConnection()
 
