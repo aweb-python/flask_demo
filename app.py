@@ -217,10 +217,10 @@ def getConnection():
             "ERROR: Unexpected error: Could not connect to MySql instance.")
         traceback.print_exc()
         raise Exception(str(e))
-conn = getConnection()
 
 @app.route("/getrds/", methods = ['GET'])
 def get_rds_data():
+    conn = getConnection()
     try:
         with conn.cursor() as cursor:
             cursor.execute("SELECT * FROM user_tbl")
